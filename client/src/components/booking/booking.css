@@ -1,0 +1,163 @@
+.search-card {
+  box-shadow: 0 16px 40px rgba(21, 32, 74, 0.08);
+  margin-bottom: 20px;
+}
+
+.search-swap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bus-list {
+  margin-top: 4px;
+}
+
+.bus-empty {
+  margin-top: 8px;
+  box-shadow: 0 16px 40px rgba(21, 32, 74, 0.06);
+}
+
+.bus-card {
+  box-shadow: 0 14px 34px rgba(21, 32, 74, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.bus-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 44px rgba(21, 32, 74, 0.12);
+}
+
+.bus-card__company {
+  font-size: 1.05rem;
+}
+
+.bus-card__value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1b2140;
+}
+
+.bus-card__value span {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #8a90a8;
+}
+
+.bus-card__action {
+  text-align: right;
+}
+
+.booking-panel {
+  box-shadow: 0 18px 44px rgba(21, 32, 74, 0.08);
+}
+
+.booking-panel__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.booking-panel__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.passenger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.passenger-card {
+ padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid #e8eaf6;
+  background: #fbfbfe;
+}
+
+.passenger-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.passenger-card__gender {
+  margin-top: 12px;
+}
+
+.summary-card {
+  box-shadow: 0 18px 44px rgba(21, 32, 74, 0.08);
+  position: sticky;
+  top: 88px;
+}
+
+.summary-card__route {
+  margin: 4px 0 !important;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 5px 0;
+  color: #4a5170;
+}
+
+.summary-row strong {
+  color: #1b2140;
+}
+
+.summary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.summary-row--total {
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px dashed #e3e6f3;
+  font-size: 1.05rem;
+}
+
+.summary-row--total strong {
+  font-size: 1.3rem;
+  color: #5b4bff;
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 991px) {
+  .payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    position: static;
+  }
+
+  .bus-card__action {
+    text-align: left;
+  }
+}
+
+@media (max-width: 767px) {
+  .search-swap {
+    justify-content: flex-start;
+  }
+}

@@ -2,99 +2,131 @@
 
 Git 仓库：`git@github.com:rick-peng-li/MERN-BUS-APP-web.git`
 
-Unique Travels 长途客车在线订票系统，基于 MERN 技术栈（MongoDB + Express + React + Node.js）实现。用户可以注册登录、查询城市间的班次、在线选座、填写乘客信息、模拟信用卡支付并生成电子车票，同时在个人中心查看账户信息与历史订单。
+Unique Travels 长途客车在线订票系统，前后端分离架构。用户可以注册登录、查询城市间的班次、查看指定日期的实时余票、可视化选座、填写乘客信息、模拟信用卡支付并生成电子车票，同时在个人中心查看账户信息与历史订单。
 
-## 技术架构
+## 技术栈
 
 | 层 | 技术 |
 | --- | --- |
-| 前端 | React 16（Create React App）、React Router 5、Bootstrap 4、Axios、react-credit-cards |
-| 后端 | Node.js、Express 4、Passport（local + JWT 策略）、jsonwebtoken、bcryptjs |
-| 数据库 | MongoDB（Mongoose ODM） |
+| 前端 | React 19、Vite 8、React Router 7、Ant Design 6、Axios、Day.js |
+| 后端 | Node.js 20+、Express 5（ESM）、Mongoose 9、jsonwebtoken、bcryptjs |
+| 数据库 | MongoDB |
+| 工具链 | ESLint 风格约定、Vite 别名 `@/`、环境变量 dotenv |
 
-鉴权方式为 JWT：登录成功后签发 Token，前端将其保存在 `sessionStorage` 中，访问受保护接口时通过 `secret_token` 查询参数（或 `Authorization: Bearer` 头）携带。前后端分离开发模式下通过 `proxy` 将 API 请求转发到后端；生产模式下由 Express 直接托管 React 构建产物。
+鉴权方式为 JWT：登录成功后签发 Token，前端保存在 `localStorage`，通过 `Authorization: Bearer` 请求头携带；后端中间件统一校验并挂载当前用户。开发模式下 Vite 将 `/api` 代理到后端 8080 端口，生产模式下由 Express 托管前端构建产物。
 
 ## 项目结构
 
 ```
 MERN-BUS-APP-web/
-├── backend/                  # Express 后端
-│   ├── bin/www               # 服务启动入口（默认端口 8080）
-│   ├── app.js                # Express 应用配置与路由挂载
-│   ├── auth/auth.js          # Passport 登录策略 + JWT 校验策略
-│   ├── config/keys.js        # MongoDB 连接串、JWT 密钥（支持环境变量覆盖）
-│   ├── data/buses.json       # 班次种子数据
-│   ├── models/               # Mongoose 模型：User / Buses / Booking
-│   ├── routes/               # login / register / loggedInUser / routeSelection
-│   └── scripts/seed.js       # 数据库初始化脚本（班次 + 演示账号）
-├── frontend/                 # React 前端
-│   ├── public/
-│   └── src/components/       # Homepage / Login-Signup / routeSelector / BusList
-│                             # SeatSelection / PaymentTab / TicketPage / Profile / API
-└── documentationResources/   # README 展示用截图
+├── client/                        # 前端（Vite）
+│   ├── index.html
+│   ├── vite.config.js             # @ 别名、/api 代理
+│   └── src/
+│       ├── main.jsx               # 应用入口、Ant Design 主题
+│       ├── App.jsx
+│       ├── router/                # 路由表与受保护路由装配
+│       ├── layouts/               # 顶部导航、页脚等整体布局
+│       ├── pages/                 # 页面级组件
+│       │   ├── home/              # 首页
+│       │   ├── auth/              # 登录、注册
+│       │   ├── booking/           # 订票主流程
+│       │   ├── ticket/            # 电子车票
+│       │   └── profile/           # 个人中心
+│       ├── components/
+│       │   ├── common/            # 品牌 Logo、受保护路由
+│       │   └── booking/           # 搜索表单、班次列表、座位图、乘客信息、支付、订单汇总
+│       ├── services/              # axios 实例与接口封装
+│       ├── hooks/                 # useRequest 等通用逻辑
+│       ├── context/               # 登录态与订票草稿
+│       ├── utils/                 # 常量、格式化、银行卡、本地存储
+│       ├── styles/                # 全局样式
+│       └── assets/                # 图片资源
+└── server/                        # 后端（Express）
+    ├── server.js                  # 启动入口（连接数据库并监听端口）
+    ├── app.js                     # 中间件与路由装配
+    ├── config/                    # 环境变量、数据库连接、业务常量
+    ├── routes/                    # auth / user / booking 路由表
+    ├── controllers/               # 请求处理与业务逻辑
+    ├── middleware/                # JWT 鉴权、404、统一错误处理
+    ├── models/                    # User / Bus / Booking
+    ├── utils/                     # ApiError、交易号与正则工具
+    └── seed/                      # 初始化脚本与班次数据
 ```
 
 ## 页面与功能
 
 | 路由 | 页面 | 功能 |
 | --- | --- | --- |
-| `/` | 首页 Homepage | 品牌展示与 Get Started 入口 |
-| `/login` | 登录 | 邮箱 + 密码登录，错误提示，签发 JWT |
-| `/register` | 注册 | 姓名/邮箱/手机号/性别/生日/密码注册，重复邮箱拦截 |
-| `/routes` | 订票主流程 | 三个页签：Select Bus（按出发地/目的地/日期查询班次并展示票价与余票）、Select Seat（可视化座位图，已售座位置灰，逐座位填写乘客姓名与性别）、Payment（订单汇总、信用卡卡面实时预览、提交后生成订单） |
-| `/profile` | 个人中心 | 展示当前用户信息，以及订单数、累计消费、已购座位数等统计 |
-| `/getTicket` | 电子车票 | 展示行程、乘客、座位、金额与交易号（Transaction-ID） |
+| `/` | 首页 | 品牌展示、热门线路、订票流程说明与入口 |
+| `/login` | 登录 | 邮箱 + 密码登录，演示账号一键填充 |
+| `/register` | 注册 | 姓名、邮箱、手机号、性别、生日与密码注册，邮箱查重 |
+| `/book` | 订票 | 三步流程：查询班次（按城市与日期显示实时余票）→ 选座并填写每位乘客姓名与性别 → 模拟信用卡支付并生成订单 |
+| `/ticket/:transactionId` | 电子车票 | 行程、座位、乘客、金额、状态与交易号 |
+| `/profile` | 个人中心 | 账户信息、订单数 / 座位数 / 累计消费统计、历史订单与车票跳转 |
+| `*` | 404 | 未匹配路由兜底 |
 
-`/routes`、`/profile`、`/getTicket` 均为受保护页面，未登录访问会自动跳转登录页。
+`/book`、`/profile`、`/ticket/:transactionId` 为受保护页面，未登录访问会跳转到登录页，并在登录后回到原页面。订票草稿（已选班次、座位、乘客）保存在 `sessionStorage`，刷新页面不丢失。
 
 ## 接口设计
 
-所有 `/booking` 与 `/user` 接口需要 JWT 鉴权。
+统一前缀 `/api`，除登录、注册与健康检查外均需 JWT 鉴权。
 
 | 方法 | 路径 | 说明 |
 | --- | --- | --- |
-| POST | `/login` | 登录，参数 `{email, password}`，返回 `{token, user}` |
-| POST | `/register` | 注册，参数 `{name, email, password, mobile, gender, dob?}` |
-| GET | `/user/profile` | 当前登录用户信息 |
-| GET | `/user/bookings` | 当前用户的历史订单 |
-| GET | `/booking/cities` | 可选出发地与目的地列表（来自班次去重） |
-| POST | `/booking/search` | 按 `{startCity, destination, date?}` 查询班次，传日期时返回当日实时余票 |
-| GET | `/booking/buses/:id` | 单个班次详情 |
-| GET | `/booking/buses/:id/seats?date=` | 指定日期已售座位列表 |
-| POST | `/booking/book` | 创建订单 `{busId, travelDate, seats[], passengers[]}`，校验座位冲突，返回含交易号的订单 |
-| GET | `/booking/ticket/:transactionId` | 按交易号查询车票 |
+| GET | `/api/health` | 服务健康检查 |
+| POST | `/api/auth/login` | 登录，参数 `{email, password}`，返回 `{token, user}` |
+| POST | `/api/auth/register` | 注册，参数 `{name, email, password, mobile, gender, dob?}` |
+| GET | `/api/auth/me` | 当前登录用户 |
+| GET | `/api/user/profile` | 用户信息与订单统计 |
+| GET | `/api/user/bookings` | 当前用户历史订单（含班次详情） |
+| GET | `/api/booking/cities` | 出发地与目的地列表（由班次去重） |
+| POST | `/api/booking/search` | 按 `{startCity, destination, date?}` 查询班次，传日期时返回当日实时余票 |
+| GET | `/api/booking/buses/:id` | 单个班次详情 |
+| GET | `/api/booking/buses/:id/seats?date=` | 指定日期已售座位 |
+| POST | `/api/booking/book` | 创建订单 `{busId, travelDate, seats[], passengers[]}`，校验座位冲突 |
+| GET | `/api/booking/ticket/:transactionId` | 按交易号查询当前用户的车票 |
 
 ## 数据模型
 
-- **User**：name、email（唯一）、password（bcrypt 哈希）、mobile、gender、dob
+- **User**：name、email（唯一）、password（bcrypt 哈希，默认不返回）、mobile、gender、dob
 - **Bus**：companyName、busType、busNumber、startCity、destination、totalSeats、availableSeats、pricePerSeat
-- **Booking**：transactionId（唯一）、user、bus、travelDate、seats、passengers（seat/name/gender）、totalAmount、status、时间戳
+- **Booking**：transactionId（唯一）、user、bus、travelDate、seats、passengers（seat/name/gender）、totalAmount、status
 
 ## 环境变量
 
+后端读取 `server/.env`（可参考 `server/.env.example`）：
+
 | 变量 | 默认值 | 说明 |
 | --- | --- | --- |
+| `PORT` | `8080` | API 监听端口 |
 | `MONGODB_URI` | `mongodb://127.0.0.1:27017/bus_app` | MongoDB 连接串 |
-| `JWT_SECRET` | `top_secret` | JWT 签名密钥 |
-| `PORT` | `8080` | 后端监听端口 |
-| `REACT_APP_API_URL` | 空 | 前端 API 前缀，留空走同源/代理 |
-| `NODE_ENV` | - | 设为 `production` 时后端托管前端构建产物 |
+| `JWT_SECRET` | 开发用默认值 | JWT 签名密钥，生产环境必须修改 |
+| `JWT_EXPIRES_IN` | `1d` | Token 有效期 |
+| `NODE_ENV` | `development` | 设为 `production` 时由后端托管 `client/dist` |
+
+前端可选 `client/.env`：
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | `/api` | API 基础路径，留空走 Vite 代理 |
 
 ## 本地启动
 
-前置要求：Node.js、MongoDB（可用 Docker 启动：`docker run -d --name bus-mongo -p 27017:27017 mongo:7.0`）。
+前置要求：Node.js 20+、MongoDB（可用 Docker 启动：`docker run -d --name bus-mongo -p 27017:27017 mongo:7.0`）。
 
 ```bash
 # 后端
-cd backend
+cd server
 npm install
-npm run seed        # 导入班次数据与演示账号（首次启动需要）
-npm run devStart    # nodemon 热更新；或 npm start
+cp .env.example .env     # 按需修改连接串与密钥
+npm run seed             # 首次启动导入班次数据与演示账号
+npm run dev              # node --watch 热更新；或 npm start
 
 # 前端（新终端）
-cd frontend
+cd client
 npm install
-npm start           # http://localhost:3000，API 自动代理到 8080
+npm run dev              # http://localhost:5173，/api 自动代理到 8080
 ```
 
 演示账号：`demo@uniquetravels.com` / `demo1234`
@@ -102,15 +134,8 @@ npm start           # http://localhost:3000，API 自动代理到 8080
 ## 生产部署
 
 ```bash
-cd frontend && npm run build
-# 将 frontend/build 内容放入 backend/public 后
-cd backend && NODE_ENV=production npm start
+cd client && npm run build
+cd ../server && NODE_ENV=production npm start
 ```
 
-访问 `http://localhost:8080` 即可（端口可由 `PORT` 环境变量调整）。
-
-## 界面预览
-
-| 首页 | 登录 | 班次 | 选座 | 支付 |
-| --- | --- | --- | --- | --- |
-| ![](documentationResources/bus.gif) | ![](documentationResources/signin.png) | ![](documentationResources/bus-page.png) | ![](documentationResources/seatSelection.gif) | ![](documentationResources/payment.gif) |
+访问 `http://localhost:8080` 即可（端口由 `PORT` 调整）。

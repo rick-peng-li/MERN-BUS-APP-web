@@ -1,0 +1,182 @@
+.ticket-loading {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+}
+
+.ticket-alert {
+  margin-bottom: 20px;
+}
+
+.ticket-success {
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #e9f8f0;
+  border: 1px solid #b7e4cc;
+  color: #1c7c4f;
+  font-weight: 600;
+}
+
+.ticket-subheading {
+  color: #8a90a8;
+  font-size: 0.92rem;
+}
+
+.ticket-card {
+  box-shadow: 0 24px 60px rgba(20, 26, 51, 0.12);
+  overflow: hidden;
+}
+
+.ticket-card .ant-card-body {
+  padding: 0;
+}
+
+.ticket-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 30px 32px;
+  color: #fff;
+  background: linear-gradient(120deg, #1b1740 0%, #3a2ba8 55%, #5b4bff 100%);
+}
+
+.ticket-head__brand {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+
+.ticket-head__route {
+  color: #fff !important;
+  margin: 0 0 8px !important;
+}
+
+.ticket-head__meta {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.ticket-head__date {
+  text-align: right;
+}
+
+.ticket-head__date small {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+  margin-bottom: 6px;
+}
+
+.ticket-head__date strong {
+  font-size: 1.05rem;
+}
+
+.ticket-divider {
+  margin: 0 !important;
+  border-color: #e3e6f3 !important;
+}
+
+.ticket-divider__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  color: #9aa0b8;
+}
+
+.ticket-body {
+  padding: 28px 32px 0;
+}
+
+.ticket-label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9aa0b8;
+  margin-bottom: 8px;
+}
+
+.ticket-seats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ticket-value {
+  font-size: 1.2rem;
+  color: #1b2140;
+}
+
+.ticket-value--status {
+  color: #21a366;
+}
+
+.ticket-passengers {
+  padding: 0 32px;
+}
+
+.ticket-passenger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fbfbfe;
+  border: 1px solid #eef0f7;
+}
+
+.ticket-passenger strong {
+  display: block;
+  color: #1b2140;
+}
+
+.ticket-passenger span {
+  font-size: 0.82rem;
+  color: #8a90a8;
+}
+
+.ticket-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 24px 32px 30px;
+  margin-top: 24px;
+  border-top: 1px dashed #e3e6f3;
+  background: #fbfbfe;
+}
+
+.ticket-footer small {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9aa0b8;
+  margin-bottom: 4px;
+}
+
+.ticket-txn {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: #1b2140;
+}
+
+@media (max-width: 576px) {
+  .ticket-head,
+  .ticket-body,
+  .ticket-passengers,
+  .ticket-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .ticket-head__date {
+    text-align: left;
+  }
+}

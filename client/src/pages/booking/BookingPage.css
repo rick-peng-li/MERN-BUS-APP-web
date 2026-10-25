@@ -1,0 +1,26 @@
+.booking-steps {
+  margin-bottom: 24px;
+  box-shadow: 0 14px 34px rgba(21, 32, 74, 0.06);
+}
+
+.booking-footer-note {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.step-alert {
+  margin-bottom: 18px;
+}
+
+.payment-note {
+  display: block;
+  margin: 16px 0 8px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 767px) {
+  .booking-steps .ant-steps-item-content .ant-steps-item-description,
+  .booking-steps .ant-steps-item-content > .ant-steps-item-description {
+    display: none;
+  }
+}
